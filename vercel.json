@@ -1,4 +1,6 @@
 {
-  "buildCommand": "cd frontend && npm install && npm run build && echo 'BUILD SUCCESS' && pwd && ls -la",
-  "outputDirectory": "frontend/dist"
+  "buildCommand": "cd frontend && npm ci && npm run build",
+  "outputDirectory": "frontend/dist",
+  "framework": "vite",
+  "nodeVersion": "18.x"
 }
