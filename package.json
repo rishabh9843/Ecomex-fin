@@ -1,17 +1,17 @@
 {
-  "name": "MERN e-commerce",
+  "name": "ecomex",
   "version": "1.0.0",
   "description": "MERN Stack E-Commerce Project",
-  "main": "index.js",
+  "main": "backend/index.js",
   "type": "module",
   "scripts": {
+    "start": "node backend/index.js",
     "backend": "nodemon backend/index.js",
     "frontend": "npm run dev --prefix frontend",
     "dev": "concurrently \"npm run frontend\" \"npm run backend\"",
     "build": "cd frontend && npm install && npm run build"
   },
-  "keywords": [],
-  "author": "HuXn WebDev",
+  "author": "Rishabh Singh",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
