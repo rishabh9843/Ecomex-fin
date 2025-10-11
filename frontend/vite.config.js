@@ -1,17 +1,9 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite'
+import path from 'path'
 
 export default defineConfig({
-  root: 'src',
-  plugins: [react()],
+  root: 'src', // points Vite to src folder
   build: {
-    outDir: 'dist',
-    emptyOutDir: true,
+    outDir: path.resolve(__dirname, '../dist'), // output to frontend/dist
   },
-  server: {
-    proxy: {
-      "/api/": "https://ecomex-fin.onrender.com/",
-      "/uploads/": "https://ecomex-fin.onrender.com/",
-    },
-  },
-});
+})
