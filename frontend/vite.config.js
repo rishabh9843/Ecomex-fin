@@ -9,8 +9,8 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/api/": "https://ecomex-si8k.onrender.com",
-      "/uploads/": "https://ecomex-si8k.onrender.com",
+      "/api/": "https://ecomex-fin.onrender.com/",
+      "/uploads/": "https://ecomex-fin.onrender.com/",
     },
   },
 });
