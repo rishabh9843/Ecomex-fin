@@ -3,7 +3,7 @@ import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import cors from "cors"; // 👈 Add this
+import cors from "cors";
 
 // Utils
 import connectDB from "./config/db.js";
@@ -14,10 +14,6 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 
 dotenv.config();
-const port = process.env.PORT || 5000;
-
-connectDB();
-
 const app = express();
 
 // ✅ Middleware
@@ -32,6 +28,9 @@ app.use(
     credentials: true,
   })
 );
+
+// ✅ Connect to MongoDB
+connectDB();
 
 // ✅ API Routes
 app.use("/api/users", userRoutes);
@@ -49,15 +48,16 @@ app.get("/api/config/paypal", (req, res) => {
 const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
-// ✅ Test root route (important for Render)
+// ✅ Test root route
 app.get("/", (req, res) => {
   res.send("Backend is running successfully 🚀");
 });
 
-// ✅ Fallback for non-existing routes (optional but clean)
+// ✅ Fallback for non-existing routes
 app.use((req, res, next) => {
   res.status(404).json({ message: "Route not found" });
 });
 
 // ✅ Start server
+const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server running on port: ${port}`));
