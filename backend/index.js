@@ -24,17 +24,38 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ✅ CORRECTED CORS Configuration
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173", // for local dev
-      "https://ecomex-final.vercel.app", // your clean Vercel URL
-      "https://ecomex-final-2-p7hy0lq7r-rishabh-singhs-projects-d32fe9a4.vercel.app", // 👈 The exact Vercel URL from the error
-    ],
-    credentials: true,
-  })
-);
+// A list of allowed origins
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://ecomex-final.vercel.app", // Your main production URL
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Check if the origin is in our static list
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } 
+    // Check if the origin is a Vercel preview URL for your project
+    else if (origin.endsWith("-rishabh-singhs-projects-d32fe9a4.vercel.app")) {
+      callback(null, true);
+    } 
+    else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+
+// Use the new dynamic CORS options
+app.use(cors(corsOptions));
+
+
+// 👇 THIS IS THE NEW DEBUGGING ROUTE
+app.get("/api/verify-deployment", (req, res) => {
+  res.send("Deployment successful! The latest CORS fix is active.");
+});
+
 
 // Routes
 app.use("/api/users", userRoutes);
