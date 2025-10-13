@@ -24,12 +24,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ✅ CORS for Vercel frontend
+// ✅ CORRECTED CORS Configuration
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",               // for local dev
-      "https://ecomex-final.vercel.app",     // your Vercel frontend URL
+      "http://localhost:5173", // for local dev
+      "https://ecomex-final.vercel.app", // your clean Vercel URL
+      "https://ecomex-final-2-p7hy0lq7r-rishabh-singhs-projects-d32fe9a4.vercel.app", // 👈 The exact Vercel URL from the error
     ],
     credentials: true,
   })
