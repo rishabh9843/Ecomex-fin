@@ -24,26 +24,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// --- FINAL, SECURE CORS CONFIGURATION ---
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://ecomex-fin-git-main-rishabh-singhs-projects-d32fe9a4.vercel.app",
-];
-
+// --- TEMPORARY DEBUGGING CODE FOR CORS ---
+// This block will log every origin and allow all of them to pass.
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests if the origin is in our whitelist or if there's no origin (like for server-to-server requests)
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
+    // Log every origin to find the correct Vercel URL
+    if (origin) {
+      console.log(`CORS request from origin: ${origin}`);
     }
+    
+    // Allow all origins to get the app working and find the URL
+    callback(null, true);
   },
   credentials: true,
 };
 
 app.use(cors(corsOptions));
-// --- END OF FINAL CODE ---
+// --- END OF TEMPORARY CODE ---
 
 
 // Routes
