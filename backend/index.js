@@ -24,37 +24,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// A list of allowed origins
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://ecomex-final.vercel.app", // Your main production URL
-];
-
+// --- TEMPORARY DEBUGGING CODE FOR CORS ---
+// This block will log every origin and allow all of them to pass.
 const corsOptions = {
   origin: function (origin, callback) {
-    // Check if the origin is in our static list
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } 
-    // Check if the origin is a Vercel preview URL for your project
-    else if (origin.endsWith("-rishabh-singhs-projects-d32fe9a4.vercel.app")) {
-      callback(null, true);
-    } 
-    else {
-      callback(new Error("Not allowed by CORS"));
+    // Log every origin to find the correct Vercel URL
+    if (origin) {
+      console.log(`CORS request from origin: ${origin}`);
     }
+    
+    // Allow all origins to get the app working and find the URL
+    callback(null, true);
   },
   credentials: true,
 };
 
-// Use the new dynamic CORS options
 app.use(cors(corsOptions));
-
-
-// 👇 THIS IS THE NEW DEBUGGING ROUTE
-app.get("/api/verify-deployment", (req, res) => {
-  res.send("Deployment successful! The latest CORS fix is active.");
-});
+// --- END OF TEMPORARY CODE ---
 
 
 // Routes
@@ -72,7 +58,7 @@ app.get("/api/config/paypal", (req, res) => {
 const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
-// Optional: serve frontend in production (not needed if separate)
+// Serve frontend in production
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")));
 
