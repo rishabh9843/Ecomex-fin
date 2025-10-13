@@ -3,8 +3,9 @@ import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
-// Utiles
+// utils
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
@@ -23,6 +24,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// ✅ CORS for Vercel frontend
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",               // for local dev
+      "https://ecomex-final.vercel.app",     // your Vercel frontend URL
+    ],
+    credentials: true,
+  })
+);
+
+// Routes
 app.use("/api/users", userRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/products", productRoutes);
@@ -33,7 +46,21 @@ app.get("/api/config/paypal", (req, res) => {
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID });
 });
 
+// Static uploads
 const __dirname = path.resolve();
-app.use("/uploads", express.static(path.join(__dirname + "/uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
+
+// Optional: serve frontend in production (not needed if separate)
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"))
+  );
+} else {
+  app.get("/", (req, res) => {
+    res.send("API is running...");
+  });
+}
 
 app.listen(port, () => console.log(`Server running on port: ${port}`));
