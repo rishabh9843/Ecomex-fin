@@ -50,7 +50,7 @@ const loginUser = asyncHandler(async (req, res) => {
     if (isPasswordValid) {
       createToken(res, existingUser._id);
 
-      res.status(201).json({
+      res.status(200).json({
         _id: existingUser._id,
         username: existingUser.username,
         email: existingUser.email,
@@ -59,11 +59,15 @@ const loginUser = asyncHandler(async (req, res) => {
       return;
     }
   }
+
+  // If we reach here, login failed
+  res.status(401);
+  throw new Error("Invalid email or password");
 });
 
 const logoutCurrentUser = asyncHandler(async (req, res) => {
   res.cookie("jwt", "", {
-    httyOnly: true,
+    httpOnly: true,
     expires: new Date(0),
   });
 
