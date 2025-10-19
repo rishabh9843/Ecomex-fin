@@ -20,12 +20,11 @@ connectDB();
 
 const app = express();
 
-// ✅ CORS Configuration - Supports multiple origins
+// ✅ CORS Configuration - Supports multiple origins including Vercel previews
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
   process.env.FRONTEND_URL,
-  // Add your Vercel preview URLs if needed
 ].filter(Boolean);
 
 app.use(
@@ -34,6 +33,7 @@ app.use(
       // Allow requests with no origin (like mobile apps or Postman)
       if (!origin) return callback(null, true);
       
+      // Allow if in allowedOrigins OR ends with .vercel.app
       if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
         callback(null, true);
       } else {
@@ -86,7 +86,12 @@ app.use("/uploads", express.static(path.join(__dirname + "/uploads")));
 
 // ✅ ADD ERROR HANDLING MIDDLEWARE
 app.use((err, req, res, next) => {
-  console.error("Error:", err.stack);
+  console.error("❌ Error occurred:");
+  console.error("URL:", req.method, req.originalUrl);
+  console.error("Body:", req.body);
+  console.error("Error:", err.message);
+  console.error("Stack:", err.stack);
+  
   res.status(err.statusCode || 500).json({
     message: err.message || "Internal Server Error",
     stack: process.env.NODE_ENV === "production" ? null : err.stack,
