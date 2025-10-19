@@ -15,12 +15,23 @@ import {
 
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 
+// ✅ DEBUG MIDDLEWARE - Remove after fixing
+router.use((req, res, next) => {
+  console.log(`📦 Order Route: ${req.method} ${req.originalUrl}`);
+  console.log(`🔐 Authenticated: ${!!req.user}`);
+  next();
+});
+
+// Order routes
 router
   .route("/")
   .post(authenticate, createOrder)
   .get(authenticate, authorizeAdmin, getAllOrders);
 
+// User-specific orders (requires auth)
 router.route("/mine").get(authenticate, getUserOrders);
+
+// ✅ Public stats endpoints (no auth required)
 router.route("/total-orders").get(countTotalOrders);
 router.route("/total-sales").get(calculateTotalSales);
 router.route("/total-sales-by-date").get(calcualteTotalSalesByDate);
