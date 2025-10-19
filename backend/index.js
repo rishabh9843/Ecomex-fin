@@ -60,7 +60,23 @@ app.get("/api/config/paypal", (req, res) => {
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID });
 });
 
-// ✅ ADD A HEALTH CHECK ENDPOINT
+// ✅ ROOT ROUTE - Welcome message
+app.get("/", (req, res) => {
+  res.json({
+    message: "🚀 ECOMEX API is running",
+    version: "1.0.0",
+    endpoints: {
+      health: "/api/health",
+      users: "/api/users",
+      products: "/api/products",
+      orders: "/api/orders",
+      categories: "/api/category",
+      upload: "/api/upload",
+    },
+  });
+});
+
+// ✅ HEALTH CHECK ENDPOINT
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Server is running" });
 });
