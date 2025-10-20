@@ -1,4 +1,7 @@
 import Chart from "react-apexcharts";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
+
 import { useGetUsersQuery } from "../../redux/api/usersApiSlice";
 import {
   useGetTotalOrdersQuery,
@@ -12,6 +15,19 @@ import OrderList from "./OrderList";
 import Loader from "../../components/Loader";
 
 const AdminDashboard = () => {
+  // ✅ CHECK AUTH FIRST - Before making any API calls
+  const { userInfo } = useSelector((state) => state.auth);
+
+  // ✅ If not logged in or not admin, redirect immediately
+  if (!userInfo) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!userInfo.isAdmin) {
+    return <Navigate to="/" replace />;
+  }
+
+  // ✅ Only make API calls if user is authenticated
   const { data: sales, isLoading: salesLoading, error: salesError } = useGetTotalSalesQuery();
   const { data: customers, isLoading: customersLoading, error: customersError } = useGetUsersQuery();
   const { data: orders, isLoading: ordersLoading, error: ordersError } = useGetTotalOrdersQuery();
@@ -201,7 +217,6 @@ const AdminDashboard = () => {
           const dates = formattedSalesDate.map((item) => item.x);
           const salesData = formattedSalesDate.map((item) => item.y);
 
-          // Line Chart
           setLineChartState((prevState) => ({
             ...prevState,
             options: {
@@ -219,7 +234,6 @@ const AdminDashboard = () => {
             ],
           }));
 
-          // Bar Chart
           setBarChartState((prevState) => ({
             ...prevState,
             options: {
@@ -237,7 +251,6 @@ const AdminDashboard = () => {
             ],
           }));
 
-          // Area Chart
           setAreaChartState((prevState) => ({
             ...prevState,
             options: {
@@ -255,7 +268,6 @@ const AdminDashboard = () => {
             ],
           }));
 
-          // Pie Chart
           setPieChartState((prevState) => ({
             ...prevState,
             series: salesData,
